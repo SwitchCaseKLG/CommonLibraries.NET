@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -25,7 +25,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish NuGet package
       run: |
-         for f in ./EinsteinsErbe.Utils/bin/Release/*.nupkg
+         for f in ./**/*.nupkg
          do
            curl -vX PUT -u "EinsteinsErbe:${{secrets.GITHUB_TOKEN}}" -F package=@$f https://nuget.pkg.github.com/EinsteinsErbe/
          done
