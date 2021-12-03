@@ -22,10 +22,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish NuGet package
-      run: |
-         for f in ./**/*.nupkg
-         do
-           curl -vX PUT -u "EinsteinsErbe:${{secrets.GITHUB_TOKEN}}" -F package=@$f https://nuget.pkg.github.com/EinsteinsErbe/
-         done
-      shell: bash
+    - name: Push Github
+      run: dotnet nuget push *.nupkg --no-symbols --skip-duplicate
+      env:
+        NUGET_AUTH_TOKEN: ${{ github.token }}
