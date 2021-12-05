@@ -1,0 +1,20 @@
+﻿<button class="btn btn@(Value?"":"-outline")-@ButtonStyle" @onclick="UpdateValue" style=@Style>@Text</button>
+
+@code {
+    [Parameter]
+    public bool Value { get; set; }
+    [Parameter]
+    public EventCallback<bool> ValueChanged { get; set; }
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+    [Parameter]
+    public string ButtonStyle { get; set; } = "primary";
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
+
+    async Task UpdateValue()
+    {
+        Value = !Value;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}
