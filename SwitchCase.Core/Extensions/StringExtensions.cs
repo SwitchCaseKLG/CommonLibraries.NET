@@ -1,4 +1,4 @@
-﻿namespace SwitchCase.Core
+﻿namespace SwitchCase.Core.Extensions
 {
     public static class StringExtensions
     {

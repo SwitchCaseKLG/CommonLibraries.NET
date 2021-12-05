@@ -103,7 +103,14 @@
             return dir.Substring(0, (limit - (idealminlen + 1))) + delimiter + slash + name;
         }
 
-        public static void MoveContentsOfDirectory(string source, string target, bool renameExisting = false)
+        public enum DuplicateHandling
+        {
+            OVERWRITE,
+            SKIP,
+            RENAME
+        }
+
+        public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
             Directory.CreateDirectory(target);
 
@@ -112,56 +119,40 @@
                 var dest = Path.Combine(target, Path.GetFileName(file));
                 if (File.Exists(dest))
                 {
-                    if (renameExisting)
+                    switch (duplicateHandling)
                     {
-                        int index = 1;
-                        do
-                        {
-                            index++;
-                            dest = Path.Combine(target, Path.GetFileNameWithoutExtension(file) + "_(" + index + ")" + Path.GetExtension(file));
-                        } while (File.Exists(dest));
-
-                        File.Move(file, dest);
+                        case DuplicateHandling.OVERWRITE: File.Copy(file, dest, true); break;
+                        case DuplicateHandling.RENAME:
+                            {
+                                int index = 1;
+                                do
+                                {
+                                    index++;
+                                    dest = Path.Combine(target, Path.GetFileNameWithoutExtension(file) + "_(" + index + ")" + Path.GetExtension(file));
+                                } while (File.Exists(dest));
+                                File.Copy(file, dest);
+                                break;
+                            }
+                        default: break;
                     }
                 }
                 else
                 {
-                    File.Move(file, dest);
+                    File.Copy(file, dest);
                 }
             }
 
             foreach (var dir in Directory.EnumerateDirectories(source))
             {
                 var dest = Path.Combine(target, Path.GetFileName(dir));
-                MoveContentsOfDirectory(dir, dest, renameExisting);
+                CopyDirectory(dir, dest, duplicateHandling);
             }
+        }
 
+        public static void MoveDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        {
+            CopyDirectory(source, target, duplicateHandling);
             Directory.Delete(source, true);
-        }
-
-        public static void CopyDirectory(string sourceDirectory, string targetDirectory)
-        {
-            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
-            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
-        }
-
-        public static void CopyAll(this DirectoryInfo source, DirectoryInfo target)
-        {
-            Directory.CreateDirectory(target.FullName);
-
-            // Copy each file into the new directory.
-            foreach (FileInfo fi in source.GetFiles())
-            {
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-            }
-
-            // Copy each subdirectory using recursion.
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
-            {
-                CopyAll(diSourceSubDir, target.CreateSubdirectory(diSourceSubDir.Name));
-            }
         }
 
         public static void SetToReadOnly(this FileInfo fInfo)

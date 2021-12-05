@@ -1,48 +1,51 @@
-﻿namespace SwitchCase.Forms
+﻿using SwitchCase.Core;
+
+namespace SwitchCase.Forms
 {
-    public partial class TextProgressBar : UserControl
+    public partial class TextProgressBar : UserControl, IProgress
     {
         public TextProgressBar()
         {
             InitializeComponent();
-
             Reset();
         }
 
         public void Reset()
         {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() => Reset()));
-            }
-            else
-            {
-                progressBar1.Value = 0;
-                label1.Text = "";
-            }
-        }
-
-        public void SetProgress(double value)
-        {
-            SetProgress(value, value.ToString("0%"));
-        }
-
-        public void SetProgress(double value, string text)
-        {
-            SetProgress((int)(100 * value), text);
+            SetProgress(0, string.Empty);
         }
 
         public void SetProgress(int value, string text)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() => SetProgress(value, text)));
+                this.Invoke(() => SetProgress(value, text));
             }
             else
             {
                 progressBar1.Value = value;
                 label1.Text = text;
             }
+        }
+
+        public void SetProgress(float value, string text)
+        {
+            SetProgress((int)(100 * value), text);
+        }
+
+        public SubProgress GetSubProgress(int max = 100)
+        {
+            return new SubProgress(this, progressBar1.Value, max);
+        }
+
+        public void SetProgress(int value)
+        {
+            SetProgress(value, label1.Text);
+        }
+
+        public void SetProgress(string text)
+        {
+            SetProgress(progressBar1.Value, text);
         }
     }
 }
