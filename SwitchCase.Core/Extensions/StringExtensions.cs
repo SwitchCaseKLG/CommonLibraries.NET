@@ -16,9 +16,31 @@
             return input.Filter(char.IsDigit);
         }
 
-        public static string Filter(this string input, Func<char, bool>filter)
+        public static string Filter(this string input, Func<char, bool> filter)
         {
             return new string(input.Where(filter).ToArray());
+        }
+
+        public static T Parse<T>(this string input, T defaultValue)
+        {
+            T value;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                value = defaultValue;
+            }
+            else
+            {
+                try
+                {
+                    value = (T)Convert.ChangeType(input, typeof(T));
+                }
+                catch (Exception)
+                {
+                    value = defaultValue;
+                }
+            }
+            return value;
         }
     }
 }
