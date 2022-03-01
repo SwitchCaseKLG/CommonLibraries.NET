@@ -9,17 +9,19 @@
 }
 
 span {
-    visibility: hidden;
     position: absolute;
     bottom: 100%;
     left: 50%;
-    margin-left: -60px;
+    transform: translateX(-50%);
     background-color: #363636;
     color: #fff;
     text-align: center;
-    padding: 5px 5px;
+    padding: 5px 10px;
     border-radius: 6px;
     z-index: 1;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
     span::after {
@@ -27,7 +29,7 @@ span {
         position: absolute;
         top: 100%;
         left: 50%;
-        margin-left: -5px;
+        transform: translateX(-50%);
         border-width: 5px;
         border-style: solid;
         border-color: #555 transparent transparent transparent;
@@ -35,4 +37,5 @@ span {
 
 .tooltip-wrapper:hover span {
     visibility: visible;
+    opacity: 1;
 }
