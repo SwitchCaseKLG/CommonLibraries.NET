@@ -1,5 +1,11 @@
 ﻿<div class="tooltip-wrapper@(TextStyle?" tooltip-wrapper-text":"")">
-    <span>@Text</span>
+    <span>
+        @foreach (string s in Text.Split("\n"))
+        {
+            @s
+            <br />
+        }
+    </span>
     @ChildContent
 </div>
 
