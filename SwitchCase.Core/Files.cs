@@ -123,7 +123,7 @@
                             do
                             {
                                 index++;
-                                target = Path.Combine(Path.GetDirectoryName(target) ?? string.Empty, Path.GetFileNameWithoutExtension(source) + "_(" + index + ")" + Path.GetExtension(source));
+                                target = Path.Combine(Path.GetDirectoryName(target) ?? string.Empty, Path.GetFileNameWithoutExtension(target) + "_(" + index + ")" + Path.GetExtension(target));
                             } while (File.Exists(target));
                             File.Copy(source, target);
                             break;

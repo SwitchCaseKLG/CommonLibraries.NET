@@ -18,7 +18,7 @@ namespace SwitchCase.Core.Tests
             string file = "test.txt";
             string targetFile = "test_(2).txt";
             string root = "TEST";
-            string path = "TEST/test.txt";
+            string path = "TEST/test_in.txt";
             string target = "TEST/dir/test.txt";
             if (Directory.Exists(root))
             {
