@@ -110,6 +110,39 @@
             RENAME
         }
 
+        public static void CopyFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        {
+            if (File.Exists(target))
+            {
+                switch (duplicateHandling)
+                {
+                    case DuplicateHandling.OVERWRITE: File.Copy(source, target, true); break;
+                    case DuplicateHandling.RENAME:
+                        {
+                            int index = 1;
+                            do
+                            {
+                                index++;
+                                target = Path.Combine(target, Path.GetFileNameWithoutExtension(source) + "_(" + index + ")" + Path.GetExtension(source));
+                            } while (File.Exists(target));
+                            File.Copy(source, target);
+                            break;
+                        }
+                    default: break;
+                }
+            }
+            else
+            {
+                File.Copy(source, target);
+            }
+        }
+
+        public static void MoveFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        {
+            CopyFile(source, target, duplicateHandling);
+            File.Delete(target);
+        }
+
         public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
             Directory.CreateDirectory(target);
@@ -117,29 +150,7 @@
             foreach (var file in Directory.EnumerateFiles(source))
             {
                 var dest = Path.Combine(target, Path.GetFileName(file));
-                if (File.Exists(dest))
-                {
-                    switch (duplicateHandling)
-                    {
-                        case DuplicateHandling.OVERWRITE: File.Copy(file, dest, true); break;
-                        case DuplicateHandling.RENAME:
-                            {
-                                int index = 1;
-                                do
-                                {
-                                    index++;
-                                    dest = Path.Combine(target, Path.GetFileNameWithoutExtension(file) + "_(" + index + ")" + Path.GetExtension(file));
-                                } while (File.Exists(dest));
-                                File.Copy(file, dest);
-                                break;
-                            }
-                        default: break;
-                    }
-                }
-                else
-                {
-                    File.Copy(file, dest);
-                }
+                CopyFile(file, dest, duplicateHandling);
             }
 
             foreach (var dir in Directory.EnumerateDirectories(source))
