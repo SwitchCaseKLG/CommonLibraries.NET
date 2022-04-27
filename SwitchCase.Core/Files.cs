@@ -140,7 +140,7 @@
         public static void MoveFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
             CopyFile(source, target, duplicateHandling);
-            File.Delete(target);
+            File.Delete(source);
         }
 
         public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
