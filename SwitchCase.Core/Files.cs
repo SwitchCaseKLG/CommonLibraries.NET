@@ -110,22 +110,25 @@
             RENAME
         }
 
-        public static void CopyFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        private static void CopyMoveFile(string source, string target, DuplicateHandling duplicateHandling, bool move)
         {
+            if (!File.Exists(source)) return;
+
             if (File.Exists(target))
             {
                 switch (duplicateHandling)
                 {
-                    case DuplicateHandling.OVERWRITE: File.Copy(source, target, true); break;
+                    case DuplicateHandling.OVERWRITE: CopyMoveFile(source, target, move); break;
                     case DuplicateHandling.RENAME:
                         {
+                            string newTarget = target;
                             int index = 1;
                             do
                             {
                                 index++;
-                                target = Path.Combine(Path.GetDirectoryName(target) ?? string.Empty, Path.GetFileNameWithoutExtension(target) + "_(" + index + ")" + Path.GetExtension(target));
-                            } while (File.Exists(target));
-                            File.Copy(source, target);
+                                newTarget = Path.Combine(Path.GetDirectoryName(target) ?? string.Empty, Path.GetFileNameWithoutExtension(target) + "_(" + index + ")" + Path.GetExtension(target));
+                            } while (File.Exists(newTarget));
+                            CopyMoveFile(source, newTarget, move);
                             break;
                         }
                     default: break;
@@ -133,37 +136,61 @@
             }
             else
             {
-                File.Copy(source, target);
+                CopyMoveFile(source, target, move);
             }
+        }
+
+        private static void CopyMoveFile(string source, string target, bool move)
+        {
+            if (move)
+            {
+                File.Move(source, target, true);
+            }
+            else
+            {
+                File.Copy(source, target, true);
+            }
+        }
+
+        public static void CopyFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        {
+            CopyMoveFile(source, target, duplicateHandling, false);
         }
 
         public static void MoveFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
-            CopyFile(source, target, duplicateHandling);
-            File.Delete(source);
+            CopyMoveFile(source, target, duplicateHandling, true);
         }
 
-        public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        private static void CopyMoveDirectory(string source, string target, DuplicateHandling duplicateHandling, bool move)
         {
+            if (!Directory.Exists(source)) return;
+
             Directory.CreateDirectory(target);
 
             foreach (var file in Directory.EnumerateFiles(source))
             {
                 var dest = Path.Combine(target, Path.GetFileName(file));
-                CopyFile(file, dest, duplicateHandling);
+                CopyMoveFile(file, dest, duplicateHandling, move);
             }
 
             foreach (var dir in Directory.EnumerateDirectories(source))
             {
                 var dest = Path.Combine(target, Path.GetFileName(dir));
-                CopyDirectory(dir, dest, duplicateHandling);
+                CopyMoveDirectory(dir, dest, duplicateHandling, move);
             }
+
+            if(move) Directory.Delete(source);
+        }
+
+        public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        {
+            CopyMoveDirectory(source, target, duplicateHandling, false);
         }
 
         public static void MoveDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
-            CopyDirectory(source, target, duplicateHandling);
-            Directory.Delete(source, true);
+            CopyMoveDirectory(source, target, duplicateHandling, true);
         }
 
         public static void SetToReadOnly(this FileInfo fInfo)
