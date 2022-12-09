@@ -42,5 +42,21 @@
             }
             return value;
         }
+
+        public static string Limit(this string value, int length)
+        {
+            if (value.Length < length)
+            {
+                return value;
+            }
+            if (length > 3)
+            {
+                return value[..(length - 3)] + "...";
+            }
+            else
+            {
+                return value[..length];
+            }
+        }
     }
 }
