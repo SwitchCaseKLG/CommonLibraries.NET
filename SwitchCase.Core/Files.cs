@@ -11,6 +11,7 @@
         {
             CREATE,
             UPDATE,
+            ACCESS,
             OLDTEST,
             NEWEST
         }
@@ -22,9 +23,10 @@
                 switch (dateType)
                 {
                     case DateType.CREATE: return File.GetCreationTime(path);
-                    case DateType.UPDATE: return File.GetLastAccessTime(path);
-                    case DateType.NEWEST: return new[] { File.GetCreationTime(path), File.GetLastAccessTime(path) }.Max();
-                    case DateType.OLDTEST: return new[] { File.GetCreationTime(path), File.GetLastAccessTime(path) }.Min();
+                    case DateType.ACCESS: return File.GetLastAccessTime(path);
+                    case DateType.UPDATE: return File.GetLastWriteTime(path);
+                    case DateType.NEWEST: return new[] { File.GetCreationTime(path), File.GetLastAccessTime(path), File.GetLastWriteTime(path) }.Max();
+                    case DateType.OLDTEST: return new[] { File.GetCreationTime(path), File.GetLastAccessTime(path), File.GetLastWriteTime(path) }.Min();
                     default: break;
                 }
             }
