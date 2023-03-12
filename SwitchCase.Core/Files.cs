@@ -112,6 +112,21 @@
             RENAME
         }
 
+        public static string GetRenamedFileName(string path)
+        {
+            string newPath = path;
+            if (File.Exists(path))
+            {
+                int index = 1;
+                do
+                {
+                    index++;
+                    newPath = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Path.GetFileNameWithoutExtension(path) + "_(" + index + ")" + Path.GetExtension(path));
+                } while (File.Exists(newPath));
+            }
+            return newPath;
+        }
+
         private static void CopyMoveFile(string source, string target, DuplicateHandling duplicateHandling, bool move)
         {
             if (!File.Exists(source)) return;
@@ -123,14 +138,7 @@
                     case DuplicateHandling.OVERWRITE: CopyMoveFile(source, target, move); break;
                     case DuplicateHandling.RENAME:
                         {
-                            string newTarget = target;
-                            int index = 1;
-                            do
-                            {
-                                index++;
-                                newTarget = Path.Combine(Path.GetDirectoryName(target) ?? string.Empty, Path.GetFileNameWithoutExtension(target) + "_(" + index + ")" + Path.GetExtension(target));
-                            } while (File.Exists(newTarget));
-                            CopyMoveFile(source, newTarget, move);
+                            CopyMoveFile(source, GetRenamedFileName(target), move);
                             break;
                         }
                     default: break;
@@ -182,7 +190,7 @@
                 CopyMoveDirectory(dir, dest, duplicateHandling, move);
             }
 
-            if(move) Directory.Delete(source);
+            if (move) Directory.Delete(source);
         }
 
         public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
