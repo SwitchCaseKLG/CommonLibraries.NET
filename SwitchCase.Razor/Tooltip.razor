@@ -1,4 +1,4 @@
-﻿<div class="tooltip-wrapper@(TextStyle?" tooltip-wrapper-text":"")">
+﻿<div class="tooltip-wrapper@(TextStyle?" tooltip-wrapper-text":"") @CssClass">
     @if (!string.IsNullOrWhiteSpace(Text))
     {
         <span>
@@ -13,7 +13,12 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string Text { get; set; } = string.Empty;
-    [Parameter] public bool TextStyle { get; set; } = false;
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+    [Parameter]
+    public bool TextStyle { get; set; } = false;
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
 }
