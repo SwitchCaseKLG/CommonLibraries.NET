@@ -164,15 +164,24 @@ namespace SwitchCase.Core
             }
         }
 
+        private static void CreateParentDirectory(string path)
+        {
+            string? dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrWhiteSpace(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+        }
+
         public static void CopyFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(target));
+            CreateParentDirectory(target);
             CopyMoveFile(source, target, duplicateHandling, false);
         }
 
         public static void MoveFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(target));
+            CreateParentDirectory(target);
             CopyMoveFile(source, target, duplicateHandling, true);
         }
 
