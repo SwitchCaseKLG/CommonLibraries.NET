@@ -1,4 +1,6 @@
-﻿namespace SwitchCase.Core
+﻿using System.IO;
+
+namespace SwitchCase.Core
 {
     public static class Files
     {
@@ -164,11 +166,13 @@
 
         public static void CopyFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(target));
             CopyMoveFile(source, target, duplicateHandling, false);
         }
 
         public static void MoveFile(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(target));
             CopyMoveFile(source, target, duplicateHandling, true);
         }
 
