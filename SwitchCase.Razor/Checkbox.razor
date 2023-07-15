@@ -1,6 +1,8 @@
-﻿<button class="btn btn@(Value?"":"-outline")-@ButtonStyle @CssClass" @onclick="UpdateValue" style=@Style>@Text</button>
+﻿<button class="btn btn@(Value?"":"-outline")-@ButtonStyle @CssClass" @onclick="UpdateValue" style=@Style disabled=@ReadOnly>@Text</button>
 
 @code {
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
     [Parameter]
     public bool Value { get; set; }
     [Parameter]
