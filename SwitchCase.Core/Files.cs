@@ -114,6 +114,13 @@ namespace SwitchCase.Core
             RENAME
         }
 
+        public enum FolderDuplicateHandling
+        {
+            MERGE,
+            SKIP,
+            RENAME
+        }
+
         public static string GetRenamedFileName(string path)
         {
             string newPath = path;
@@ -124,6 +131,21 @@ namespace SwitchCase.Core
                 {
                     index++;
                     newPath = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Path.GetFileNameWithoutExtension(path) + "_(" + index + ")" + Path.GetExtension(path));
+                } while (File.Exists(newPath));
+            }
+            return newPath;
+        }
+
+        public static string GetRenamedFolderName(string path)
+        {
+            string newPath = path;
+            if (Directory.Exists(path))
+            {
+                int index = 1;
+                do
+                {
+                    index++;
+                    newPath = path + "_(" + index + ")";
                 } while (File.Exists(newPath));
             }
             return newPath;
@@ -185,9 +207,23 @@ namespace SwitchCase.Core
             CopyMoveFile(source, target, duplicateHandling, true);
         }
 
-        private static void CopyMoveDirectory(string source, string target, DuplicateHandling duplicateHandling, bool move)
+        private static void CopyMoveDirectory(string source, string target, DuplicateHandling duplicateHandling, FolderDuplicateHandling folderDuplicateHandling, bool move)
         {
             if (!Directory.Exists(source)) return;
+
+            if (Directory.Exists(target))
+            {
+                switch (folderDuplicateHandling)
+                {
+                    case FolderDuplicateHandling.SKIP: return;
+                    case FolderDuplicateHandling.RENAME:
+                        {
+                            target = GetRenamedFileName(target);
+                            break;
+                        }
+                    default: break;
+                }
+            }
 
             Directory.CreateDirectory(target);
 
@@ -200,20 +236,20 @@ namespace SwitchCase.Core
             foreach (var dir in Directory.EnumerateDirectories(source))
             {
                 var dest = Path.Combine(target, Path.GetFileName(dir));
-                CopyMoveDirectory(dir, dest, duplicateHandling, move);
+                CopyMoveDirectory(dir, dest, duplicateHandling, folderDuplicateHandling, move);
             }
 
             if (move) Directory.Delete(source);
         }
 
-        public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        public static void CopyDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE, FolderDuplicateHandling folderDuplicateHandling = FolderDuplicateHandling.MERGE)
         {
-            CopyMoveDirectory(source, target, duplicateHandling, false);
+            CopyMoveDirectory(source, target, duplicateHandling, folderDuplicateHandling, false);
         }
 
-        public static void MoveDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE)
+        public static void MoveDirectory(string source, string target, DuplicateHandling duplicateHandling = DuplicateHandling.OVERWRITE, FolderDuplicateHandling folderDuplicateHandling = FolderDuplicateHandling.MERGE)
         {
-            CopyMoveDirectory(source, target, duplicateHandling, true);
+            CopyMoveDirectory(source, target, duplicateHandling, folderDuplicateHandling, true);
         }
 
         public static void SetToReadOnly(this FileInfo fInfo)
