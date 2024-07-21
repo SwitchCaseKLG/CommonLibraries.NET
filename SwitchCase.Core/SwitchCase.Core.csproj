@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.0.13</Version>
+    <Version>0.0.14</Version>
 	<RepositoryUrl>https://github.com/SwitchCaseKLG/CommonLibraries.NET</RepositoryUrl>
 	<Company>SwitchCaseKLG</Company>
 	<Authors>Manuel Jordan</Authors>
