@@ -15,5 +15,17 @@
                 return value;
             }
         }
+
+        public static string GetValueOrKey<T>(this Dictionary<string, string> dict, string key)
+        {
+            if (dict.ContainsKey(key))
+            {
+                return dict[key];
+            }
+            else
+            {
+                return key;
+            }
+        }
     }
 }
