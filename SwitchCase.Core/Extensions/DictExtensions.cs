@@ -16,7 +16,7 @@
             }
         }
 
-        public static string GetValueOrKey<T>(this Dictionary<string, string> dict, string key)
+        public static string GetValueOrKey(this Dictionary<string, string> dict, string key)
         {
             if (dict.ContainsKey(key))
             {
