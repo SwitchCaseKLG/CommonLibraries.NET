@@ -78,7 +78,7 @@ namespace SwitchCase.Core
             int delimlen = delimiter.Length;
             int idealminlen = namelen + delimlen;
 
-            var slash = (absolutepath.IndexOf("/") > -1 ? "/" : "\\");
+            var slash = absolutepath.IndexOf("/") > -1 ? "/" : "\\";
 
             //less than the minimum amt
             if (limit < ((2 * delimlen) + 1))
@@ -311,6 +311,26 @@ namespace SwitchCase.Core
         public static string ReplaceInvalidChars(string filename, string replacement = "_")
         {
             return string.Join(replacement, filename.Split(Path.GetInvalidFileNameChars()));
+        }
+
+        public static bool IsFileLocked(this FileInfo file)
+        {
+            try
+            {
+                using FileStream stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                stream.Close();
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
         }
     }
 }

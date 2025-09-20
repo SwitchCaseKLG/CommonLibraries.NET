@@ -1,18 +1,7 @@
 ﻿namespace SwitchCase.Core
 {
-    public class SubProgress : IProgress
+    public class SubProgress(IProgress parentProgress, int min, int max) : IProgress
     {
-        private readonly IProgress parentProgress;
-        private readonly int min;
-        private readonly int max;
-
-        public SubProgress(IProgress parentProgress, int min, int max)
-        {
-            this.parentProgress = parentProgress;
-            this.min = min;
-            this.max = max;
-        }
-
         public void Reset()
         {
             parentProgress.SetProgress(min, string.Empty);

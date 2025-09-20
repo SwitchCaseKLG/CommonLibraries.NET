@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace SwitchCase.Core
 {
-    public class MultiStream : Stream
+    public class MultiStream(params Stream[] streams) : Stream
     {
-        private readonly List<Stream> _streams;
-
-        public MultiStream(params Stream[] streams)
-        {
-            _streams = streams.ToList();
-        }
+        private readonly List<Stream> _streams = [.. streams];
 
         public override void Flush()
         {
