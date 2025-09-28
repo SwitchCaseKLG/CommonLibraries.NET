@@ -64,6 +64,13 @@ namespace SwitchCase.Core.Extensions
             return int.TryParse(value, out int result) ? result : 0;
         }
 
+        public static bool? ToBool(this string value)
+        {
+            if (TRUE_VALUES.Contains(value.ToLower())) return true;
+            if (FALSE_VALUES.Contains(value.ToLower())) return false;
+            return null;
+        }
+
         public static bool ToBool(this string value, bool defaultValue = false)
         {
             if (TRUE_VALUES.Contains(value.ToLower())) return true;
