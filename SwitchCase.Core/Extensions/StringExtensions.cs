@@ -6,12 +6,12 @@ namespace SwitchCase.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static string[] TRUE_VALUES =
+        private readonly static string[] TRUE_VALUES =
         [
             "true", "t", "wahr", "w", "ja", "j", "yes", "y"
         ];
 
-        public static string[] FALSE_VALUES =
+        private readonly static string[] FALSE_VALUES =
         [
             "false", "f", "falsch", "nein", "n", "no"
         ];
@@ -59,20 +59,22 @@ namespace SwitchCase.Core.Extensions
             return value;
         }
 
-        public static int ToInt(this string value)
+        public static int ToInt(this string? value)
         {
             return int.TryParse(value, out int result) ? result : 0;
         }
 
-        public static bool? ToBool(this string value)
+        public static bool? ToBool(this string? value)
         {
+            if (value == null) return null;
             if (TRUE_VALUES.Contains(value.ToLower())) return true;
             if (FALSE_VALUES.Contains(value.ToLower())) return false;
             return null;
         }
 
-        public static bool ToBool(this string value, bool defaultValue = false)
+        public static bool ToBool(this string? value, bool defaultValue = false)
         {
+            if (value == null) return defaultValue;
             if (TRUE_VALUES.Contains(value.ToLower())) return true;
             if (FALSE_VALUES.Contains(value.ToLower())) return false;
             return defaultValue;
@@ -133,7 +135,7 @@ namespace SwitchCase.Core.Extensions
             return value[..(limit - length2)] + delimiter;
         }
 
-        public static T ToEnum<T>(this string value, T defaultValue) where T : struct
+        public static T ToEnum<T>(this string? value, T defaultValue) where T : struct
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -152,7 +154,7 @@ namespace SwitchCase.Core.Extensions
             return new string([.. input.Where(filter)]);
         }
 
-        public static T Parse<T>(this string input, T defaultValue)
+        public static T Parse<T>(this string? input, T defaultValue)
         {
             T value;
 

@@ -14,6 +14,11 @@ namespace SwitchCase.Core.Extensions
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj), new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace });
         }
 
+        public static T OrDefault<T>(this T? obj) where T : new()
+        {
+            return obj ?? new T();
+        }
+
         public static bool IsIn<T>(this T value, params T[] values)
         {
             return values.Contains(value);
