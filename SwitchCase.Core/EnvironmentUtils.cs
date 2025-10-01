@@ -4,7 +4,7 @@ namespace SwitchCase.Core
 {
     public class EnvironmentUtils
     {
-        public static T LoadEnvVar<T>(string name, T defaultValue = default)
+        public static T LoadEnvVar<T>(string name, T defaultValue = default!)
         {
             string? strValue = Environment.GetEnvironmentVariable(name);
             T value;

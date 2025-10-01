@@ -16,18 +16,25 @@ namespace SwitchCase.Core.Extensions
             "false", "f", "falsch", "nein", "n", "no"
         ];
 
-        public static string TrimEnd(this string value, string trimString)
+        public static string TrimEnd(this string? value, string? trimString)
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrEmpty(trimString))
+            if (string.IsNullOrEmpty(value))
+            {
+                return string.Empty;
+            }
+            if (string.IsNullOrEmpty(trimString))
             {
                 return value;
             }
-
             return value.EndsWith(trimString, StringComparison.Ordinal) ? value[..^trimString.Length] : value;
         }
 
-        public static string SplitToLines(this string stringToSplit, int maximumLineLength)
+        public static string SplitToLines(this string? stringToSplit, int maximumLineLength)
         {
+            if (stringToSplit == null)
+            {
+                return string.Empty;
+            }
             return Regex.Replace(stringToSplit, @"(.{1," + maximumLineLength + @"})(?:\s|$)", "$1\n").TrimEnd('\n');
         }
 
@@ -80,7 +87,7 @@ namespace SwitchCase.Core.Extensions
             return defaultValue;
         }
 
-        public static string ToSingleLineAndQuoted(this string value)
+        public static string ToSingleLineAndQuoted(this string? value)
         {
             value ??= string.Empty;
             return value.Replace("\n", " ").Replace("\r", " ").Replace("\t", " ").Replace("\"", "'").Trim().Enquote();
@@ -91,7 +98,7 @@ namespace SwitchCase.Core.Extensions
             return $"\"{value}\"";
         }
 
-        public static string NormalizeString(this string value)
+        public static string NormalizeString(this string? value)
         {
             if (value == null) return string.Empty;
 
@@ -112,11 +119,11 @@ namespace SwitchCase.Core.Extensions
             return sb.ToString().ToUpperInvariant();
         }
 
-        public static string Shrink(this string value, int limit, string delimiter = "…")
+        public static string Shrink(this string? value, int limit, string delimiter = "…")
         {
             if (string.IsNullOrEmpty(value))
             {
-                return "";
+                return string.Empty;
             }
 
             int length = value.Length;
@@ -176,8 +183,12 @@ namespace SwitchCase.Core.Extensions
             return value;
         }
 
-        public static string Limit(this string value, int length)
+        public static string Limit(this string? value, int length)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
             if (value.Length < length)
             {
                 return value;
