@@ -1,15 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SwitchCase.Core;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SwitchCase.Core.Tests
 {
     [TestClass()]
+    [DoNotParallelize]
     public class FilesTests
     {
         [TestMethod()]
@@ -56,7 +51,7 @@ namespace SwitchCase.Core.Tests
             string root = "DIRTEST";
             string source = "DIRTEST/INDIR";
             string sourceFile = "DIRTEST/INDIR/test.txt";
-            string target = "DIRTEST/OUTDIR";        
+            string target = "DIRTEST/OUTDIR";
 
             if (Directory.Exists(root))
             {
@@ -72,7 +67,7 @@ namespace SwitchCase.Core.Tests
             Assert.IsTrue(File.Exists("DIRTEST/OUTDIR/test.txt"));
             Assert.IsTrue(File.Exists("DIRTEST/OUTDIR/test_(2).txt"));
             Assert.IsTrue(File.Exists("DIRTEST/OUTDIR/test_(3).txt"));
-            Assert.IsTrue(!Directory.Exists(source));
+            Assert.IsFalse(Directory.Exists(source));
         }
     }
 }

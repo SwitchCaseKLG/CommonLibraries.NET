@@ -12,8 +12,7 @@ namespace SwitchCase.Web
 
         public static T Get<T>(this ITempDataDictionary tempData, string key) where T : class, new()
         {
-            object o;
-            tempData.TryGetValue(key, out o);
+            tempData.TryGetValue(key, out object? o);
             return o == null ? new T() : JsonSerializer.Deserialize<T>(o.ToString() ?? string.Empty) ?? new T();
         }
     }

@@ -32,10 +32,14 @@ namespace SwitchCase.Forms
         public DialogResult ShowDialog()
         {
             var shellType = Type.GetTypeFromProgID("Shell.Application");
+            if (shellType == null)
+            {
+                return DialogResult.Cancel;
+            }
             var shell = Activator.CreateInstance(shellType);
             var folder = shellType.InvokeMember(
                              "BrowseForFolder", BindingFlags.InvokeMethod, null,
-                             shell, new object[] { 0, Description, 0, RootPath, });
+                             shell, [0, Description, 0, RootPath,]);
             if (folder is null)
             {
                 return DialogResult.Cancel;
@@ -45,9 +49,13 @@ namespace SwitchCase.Forms
                 var folderSelf = folder.GetType().InvokeMember(
                                      "Self", BindingFlags.GetProperty, null,
                                      folder, null);
+                if (folderSelf is null)
+                {
+                    return DialogResult.Cancel;
+                }
                 SelectedPath = folderSelf.GetType().InvokeMember(
                                    "Path", BindingFlags.GetProperty, null,
-                                   folderSelf, null) as string;
+                                   folderSelf, null) as string ?? string.Empty;
                 // maybe ensure that SelectedPath is set
                 return DialogResult.OK;
             }
